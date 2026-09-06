@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Healthy Cart - Healthy Future</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+      <a class="navbar-brand navbar-brand-custom" href="index.html">
+        <div class="brand-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+        <span>Healthy Future</span>
+      </a>
+      <div class="d-flex align-items-center gap-3 ms-auto">
+        <div id="nav-auth-container"></div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-5">
+    <h1 class="h2 fw-bold mb-4"><i class="bi bi-basket2-fill text-success me-2"></i>Review Your Cart</h1>
+
+    <div class="row g-4" id="cart-content-wrapper">
+      <div class="col-12 text-center py-5">
+        <div class="spinner-border text-success" role="status"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer-custom">
+    <div class="container text-center text-muted small">
+      &copy; 2026 Healthy Future Web Application. Clean, Nutritious Food Delivery.
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+
+  <script>
+    async function renderCartView() {
+      const wrapper = document.getElementById('cart-content-wrapper');
+
+      if (!Auth.isLoggedIn()) {
+        wrapper.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <i class="bi bi-person-lock fs-1 text-muted"></i>
+            <h3 class="mt-3">Please sign in to view your cart</h3>
+            <p class="text-muted">Sign in to save items and complete your order.</p>
+            <a href="login.html?redirect=cart.html" class="btn btn-primary-custom mt-2">Sign In Now</a>
+          </div>
+        `;
+        return;
+      }
+
+      const cart = await Cart.fetchCart();
+      const items = cart.items || [];
+
+      if (items.length === 0) {
+        wrapper.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <i class="bi bi-basket2 fs-1 text-muted"></i>
+            <h3 class="mt-3">Your healthy cart is empty</h3>
+            <p class="text-muted">Explore our curated nutritious dishes and wholesome bowls.</p>
+            <a href="restaurants.html" class="btn btn-primary-custom mt-2">Explore Menu</a>
+          </div>
+        `;
+        return;
+      }
+
+      const subtotal = parseFloat(cart.subtotal || 0).toFixed(2);
+      const deliveryCharge = parseFloat(cart.delivery_charge || 30).toFixed(2);
+      const total = parseFloat(cart.total || 0).toFixed(2);
+
+      wrapper.innerHTML = `
+        <!-- Cart Items List -->
+        <div class="col-lg-8">
+          <div class="bg-white rounded-4 border p-4 shadow-sm mb-3">
+            <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom">
+              <h5 class="fw-bold mb-0">Items (${items.length})</h5>
+              <button class="btn btn-sm btn-link text-danger text-decoration-none" onclick="clearFullCart()">
+                <i class="bi bi-trash3 me-1"></i>Clear Cart
+              </button>
+            </div>
+
+            <div class="d-flex flex-column gap-3">
+              ${items.map(item => `
+                <div class="d-flex align-items-center justify-content-between p-3 rounded-3 bg-light">
+                  <div class="d-flex align-items-center gap-3">
+                    <img src="${item.food.image || 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=120&q=80'}" class="rounded-3" style="width: 65px; height: 65px; object-fit: cover;">
+                    <div>
+                      <h6 class="fw-bold mb-1">${item.food.food_name}</h6>
+                      <div class="small text-muted mb-1">${item.food.restaurant_name}</div>
+                      <div class="small fw-bold text-success">₹${item.food.price} each</div>
+                    </div>
+                  </div>
+
+                  <div class="d-flex align-items-center gap-3">
+                    <!-- Qty Controls -->
+                    <div class="input-group input-group-sm" style="width: 100px;">
+                      <button class="btn btn-outline-secondary" onclick="changeQty(${item.id}, ${item.quantity - 1})">-</button>
+                      <span class="input-group-text bg-white fw-bold">${item.quantity}</span>
+                      <button class="btn btn-outline-secondary" onclick="changeQty(${item.id}, ${item.quantity + 1})">+</button>
+                    </div>
+
+                    <div class="fw-bold text-end" style="min-width: 70px;">
+                      ₹${parseFloat(item.total_price).toFixed(2)}
+                    </div>
+
+                    <button class="btn btn-sm btn-outline-danger border-0" onclick="removeSingleItem(${item.id})">
+                      <i class="bi bi-x-lg"></i>
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Summary Column -->
+        <div class="col-lg-4">
+          <div class="bg-white rounded-4 border p-4 shadow-sm position-sticky" style="top: 90px;">
+            <h5 class="fw-bold mb-4">Bill Details</h5>
+
+            <div class="d-flex justify-content-between mb-2 text-muted">
+              <span>Item Subtotal</span>
+              <span>₹${subtotal}</span>
+            </div>
+
+            <div class="d-flex justify-content-between mb-2 text-muted">
+              <span>Delivery Fee</span>
+              <span>₹${deliveryCharge}</span>
+            </div>
+
+            <hr class="my-3">
+
+            <div class="d-flex justify-content-between mb-4 fs-5 fw-bold text-dark">
+              <span>To Pay</span>
+              <span class="text-success">₹${total}</span>
+            </div>
+
+            <a href="checkout.html" class="btn btn-primary-custom w-100 py-3 rounded-pill fw-bold fs-6">
+              Proceed to Checkout <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+      `;
+    }
+
+    async function changeQty(itemId, newQty) {
+      if (newQty <= 0) {
+        await Cart.removeItem(itemId);
+      } else {
+        await Cart.updateQuantity(itemId, newQty);
+      }
+      renderCartView();
+    }
+
+    async function removeSingleItem(itemId) {
+      await Cart.removeItem(itemId);
+      renderCartView();
+    }
+
+    async function clearFullCart() {
+      if (confirm('Clear all items from your cart?')) {
+        await Cart.clearCart();
+        renderCartView();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', renderCartView);
+  </script>
+</body>
+</html>

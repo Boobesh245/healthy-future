@@ -1,0 +1,877 @@
+/* ===================================================
+   HEALTHY FUTURE - DESIGN SYSTEM & STYLING
+   Inspired by Zomato/Swiggy with Premium Health Aesthetics
+   =================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary: #059669;
+  --primary-hover: #047857;
+  --primary-light: #ecfdf5;
+  --primary-glow: rgba(5, 150, 105, 0.2);
+  
+  --secondary: #10b981;
+  --accent: #f59e0b;
+  --accent-light: #fffbeb;
+  
+  --dark: #0f172a;
+  --dark-surface: #1e293b;
+  --slate: #475569;
+  --muted: #64748b;
+  --border-color: #e2e8f0;
+  --light-bg: #f8fafc;
+  --white: #ffffff;
+  
+  /* Macro colors */
+  --cal-color: #ea580c;
+  --cal-bg: #fff7ed;
+  --prot-color: #059669;
+  --prot-bg: #ecfdf5;
+  --carb-color: #0284c7;
+  --carb-bg: #f0f9ff;
+  --fat-color: #d97706;
+  --fat-bg: #fefce8;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 9999px;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 10px 30px rgba(5, 150, 105, 0.12);
+  --shadow-hover: 0 12px 28px rgba(15, 23, 42, 0.12);
+  
+  --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--dark);
+  background-color: var(--light-bg);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  color: var(--dark);
+  letter-spacing: -0.02em;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition);
+}
+
+/* ===================================================
+   NAVBAR
+   =================================================== */
+.navbar-custom {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.85rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: var(--transition);
+}
+
+.navbar-brand-custom {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--primary) !important;
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  box-shadow: 0 4px 10px var(--primary-glow);
+}
+
+.nav-link-custom {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--slate) !important;
+  padding: 0.5rem 0.9rem !important;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.nav-link-custom:hover, .nav-link-custom.active {
+  color: var(--primary) !important;
+  background-color: var(--primary-light);
+}
+
+/* Location Badge in Navbar */
+.nav-location-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  background-color: var(--light-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--slate);
+}
+
+/* Floating Cart Badge */
+.cart-badge-btn {
+  position: relative;
+  background: var(--primary);
+  color: white !important;
+  font-weight: 600;
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 12px var(--primary-glow);
+  transition: var(--transition);
+}
+
+.cart-badge-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--primary-glow);
+}
+
+.cart-count {
+  background: white;
+  color: var(--primary);
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+/* ===================================================
+   HERO SECTION
+   =================================================== */
+.hero-section {
+  background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%);
+  color: white;
+  padding: 4.5rem 0 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.hero-title {
+  font-size: 3.2rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: white;
+  margin-bottom: 1.25rem;
+}
+
+.hero-title span {
+  color: #34d399;
+}
+
+.hero-subtitle {
+  font-size: 1.15rem;
+  color: #a7f3d0;
+  margin-bottom: 2rem;
+  max-width: 620px;
+}
+
+/* Big Search Bar */
+.hero-search-wrapper {
+  background: white;
+  padding: 0.5rem;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  max-width: 720px;
+}
+
+.hero-search-wrapper input {
+  border: none;
+  padding: 0.8rem 1.2rem;
+  font-size: 1.05rem;
+  width: 100%;
+  outline: none;
+  background: transparent;
+  color: var(--dark);
+}
+
+.hero-search-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.85rem 2rem;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.hero-search-btn:hover {
+  background: var(--primary-hover);
+}
+
+/* Quick Filter Pills in Hero */
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.hero-pill {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.hero-pill:hover {
+  background: white;
+  color: var(--primary);
+  border-color: white;
+}
+
+/* ===================================================
+   CATEGORY CAROUSEL / GRID
+   =================================================== */
+.category-card {
+  background: white;
+  border-radius: var(--radius-md);
+  padding: 1.2rem 1rem;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--primary);
+}
+
+.category-icon-wrapper {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+  background-color: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--secondary);
+}
+
+.category-icon-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.category-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 0.2rem;
+}
+
+.category-count {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ===================================================
+   RESTAURANT CARD
+   =================================================== */
+.restaurant-card {
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.restaurant-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+  border-color: #cbd5e1;
+}
+
+.restaurant-img-wrapper {
+  position: relative;
+  height: 190px;
+  overflow: hidden;
+  background-color: #f1f5f9;
+}
+
+.restaurant-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.restaurant-card:hover .restaurant-img-wrapper img {
+  transform: scale(1.05);
+}
+
+.rating-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(6px);
+  color: #fbbf24;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.delivery-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  color: var(--dark);
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.restaurant-body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.restaurant-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.restaurant-cuisine {
+  color: var(--slate);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.restaurant-footer {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* ===================================================
+   FOOD ITEM CARD
+   =================================================== */
+.food-card {
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.food-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+}
+
+.food-img-wrapper {
+  position: relative;
+  height: 180px;
+  background-color: #f1f5f9;
+  overflow: hidden;
+}
+
+.food-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.food-card:hover .food-img-wrapper img {
+  transform: scale(1.05);
+}
+
+/* Food type dot (Veg/Non-Veg/Vegan) */
+.food-type-icon {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.type-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.type-dot.veg { background-color: #16a34a; }
+.type-dot.non-veg { background-color: #dc2626; }
+.type-dot.vegan { background-color: #059669; }
+
+.food-body {
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.food-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.food-restaurant {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.food-desc {
+  font-size: 0.85rem;
+  color: var(--slate);
+  margin-bottom: 0.75rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 2.55rem;
+}
+
+/* Nutrition Macro Badges */
+.macro-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.85rem;
+}
+
+.macro-pill {
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.macro-pill.cal { background: var(--cal-bg); color: var(--cal-color); }
+.macro-pill.prot { background: var(--prot-bg); color: var(--prot-color); }
+.macro-pill.carb { background: var(--carb-bg); color: var(--carb-color); }
+.macro-pill.fat { background: var(--fat-bg); color: var(--fat-color); }
+
+/* Health Tags */
+.health-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.tag-badge {
+  background-color: #f1f5f9;
+  color: var(--slate);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-pill);
+}
+
+.tag-badge.highlight {
+  background-color: var(--primary-light);
+  color: var(--primary);
+}
+
+.food-card-bottom {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.food-price {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--dark);
+}
+
+.btn-add-cart {
+  background-color: white;
+  border: 1.5px solid var(--primary);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 0.4rem 1.2rem;
+  border-radius: var(--radius-pill);
+  transition: var(--transition);
+}
+
+.btn-add-cart:hover {
+  background-color: var(--primary);
+  color: white;
+  box-shadow: 0 4px 10px var(--primary-glow);
+}
+
+/* ===================================================
+   FILTER SIDEBAR
+   =================================================== */
+.filter-card {
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 90px;
+}
+
+.filter-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filter-group {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 1.25rem;
+}
+
+.filter-group:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.filter-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 0.75rem;
+}
+
+/* ===================================================
+   NUTRITION DETAILS MODAL / CARD
+   =================================================== */
+.nutrition-breakdown-card {
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border: 1px solid #bbf7d0;
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  margin: 1.25rem 0;
+}
+
+.nutrition-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  text-align: center;
+}
+
+.nutrition-stat-box {
+  background: white;
+  padding: 1rem 0.5rem;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.stat-value {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--dark);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ===================================================
+   ADMIN & OWNER PORTALS
+   =================================================== */
+.portal-sidebar {
+  background: #0f172a;
+  color: white;
+  min-height: 100vh;
+  padding: 1.5rem 1rem;
+}
+
+.portal-brand {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: #34d399;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  padding: 0 0.5rem;
+}
+
+.portal-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #94a3b8;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.92rem;
+  margin-bottom: 0.35rem;
+  transition: var(--transition);
+}
+
+.portal-nav-link:hover, .portal-nav-link.active {
+  color: white;
+  background: #1e293b;
+  border-left: 3px solid var(--secondary);
+}
+
+.stat-card-dashboard {
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.stat-card-dashboard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-card-number {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--dark);
+  line-height: 1;
+  margin-top: 0.5rem;
+}
+
+/* ===================================================
+   CUSTOM BUTTONS & UTILITIES
+   =================================================== */
+.btn-primary-custom {
+  background: var(--primary);
+  color: white;
+  border: none;
+  font-weight: 700;
+  padding: 0.65rem 1.5rem;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-primary-custom:hover {
+  background: var(--primary-hover);
+  color: white;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.btn-outline-custom {
+  background: transparent;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+  font-weight: 700;
+  padding: 0.65rem 1.5rem;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.btn-outline-custom:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.status-badge.pending { background: #fef3c7; color: #b45309; }
+.status-badge.confirmed { background: #dbeafe; color: #1e40af; }
+.status-badge.preparing { background: #e0e7ff; color: #4338ca; }
+.status-badge.out-for-delivery { background: #fae8ff; color: #86198f; }
+.status-badge.delivered { background: #dcfce7; color: #15803d; }
+.status-badge.cancelled { background: #fee2e2; color: #b91c1c; }
+
+/* Footer */
+.footer-custom {
+  background: #0f172a;
+  color: #94a3b8;
+  padding: 4rem 0 2rem;
+  margin-top: auto;
+}
+
+.footer-heading {
+  color: white;
+  font-size: 1.1rem;
+  margin-bottom: 1.25rem;
+}
+
+.footer-links li {
+  list-style: none;
+  margin-bottom: 0.6rem;
+}
+
+.footer-links a:hover {
+  color: #34d399;
+}
+
+/* Toast Container */
+#toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+}
+
+.custom-toast {
+  background: #0f172a;
+  color: white;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 280px;
+}
+
+.custom-toast.success { border-left: 4px solid #10b981; }
+.custom-toast.error { border-left: 4px solid #ef4444; }
+.custom-toast.info { border-left: 4px solid #3b82f6; }
+
+@keyframes slideInUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .hero-title { font-size: 2.2rem; }
+  .nutrition-grid { grid-template-columns: repeat(2, 1fr); }
+  .portal-sidebar { min-height: auto; }
+}

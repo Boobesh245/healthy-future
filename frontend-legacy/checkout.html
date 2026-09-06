@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - Healthy Future</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+      <a class="navbar-brand navbar-brand-custom" href="index.html">
+        <div class="brand-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+        <span>Healthy Future</span>
+      </a>
+      <div class="d-flex align-items-center gap-3 ms-auto">
+        <div id="nav-auth-container"></div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-5">
+    <div class="mb-4">
+      <a href="cart.html" class="text-muted text-decoration-none small">
+        <i class="bi bi-arrow-left me-1"></i>Back to Cart
+      </a>
+    </div>
+
+    <h1 class="h2 fw-bold mb-4">Complete Your Order</h1>
+
+    <div class="row g-4">
+      <!-- Checkout Form -->
+      <div class="col-lg-8">
+        <div class="bg-white rounded-4 border p-4 shadow-sm mb-4">
+          <h5 class="fw-bold mb-3"><i class="bi bi-geo-alt-fill text-danger me-2"></i>1. Delivery Address</h5>
+          <form id="checkout-form" onsubmit="submitOrder(event)">
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Street Address / Flat / Landmark</label>
+              <textarea id="delivery-address" class="form-control" rows="3" placeholder="e.g. Flat 302, Green Glen Apartments, Bagalur Road" required></textarea>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">City</label>
+                <select id="delivery-city" class="form-select" required>
+                  <option value="Hosur" selected>Hosur</option>
+                  <option value="Bangalore">Bangalore</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Pincode</label>
+                <input type="text" id="delivery-pincode" class="form-control" placeholder="635109" value="635109" required>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label small fw-bold">Contact Phone Number</label>
+              <input type="tel" id="delivery-phone" class="form-control" placeholder="10-digit mobile number" required>
+            </div>
+
+            <h5 class="fw-bold mb-3 pt-3 border-top"><i class="bi bi-credit-card-fill text-primary me-2"></i>2. Payment Method</h5>
+            <div class="d-flex flex-column gap-2 mb-4">
+              <div class="form-check p-3 border rounded-3 bg-light">
+                <input class="form-check-input" type="radio" name="payment_method" id="pay-cod" value="COD" checked>
+                <label class="form-check-label fw-bold d-block" for="pay-cod">
+                  Cash on Delivery (COD)
+                  <span class="d-block small text-muted fw-normal">Pay with cash or UPI upon fresh delivery</span>
+                </label>
+              </div>
+              <div class="form-check p-3 border rounded-3 bg-light">
+                <input class="form-check-input" type="radio" name="payment_method" id="pay-online" value="Online">
+                <label class="form-check-label fw-bold d-block" for="pay-online">
+                  Online Payment (UPI / Cards)
+                  <span class="d-block small text-muted fw-normal">Instant digital checkout</span>
+                </label>
+              </div>
+            </div>
+
+            <button type="submit" id="btn-submit-order" class="btn btn-primary-custom w-100 py-3 rounded-pill fw-bold fs-6">
+              Confirm & Place Order <i class="bi bi-shield-check ms-1"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Order Summary Aside -->
+      <div class="col-lg-4">
+        <div class="bg-white rounded-4 border p-4 shadow-sm" id="checkout-summary-box">
+          <h5 class="fw-bold mb-3">Order Summary</h5>
+          <div id="checkout-items-preview" class="small text-muted mb-3">
+            Loading cart...
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between mb-2 small text-muted">
+            <span>Subtotal</span>
+            <span id="sum-subtotal">₹0.00</span>
+          </div>
+          <div class="d-flex justify-content-between mb-2 small text-muted">
+            <span>Delivery Fee</span>
+            <span id="sum-delivery">₹30.00</span>
+          </div>
+          <div class="d-flex justify-content-between mt-3 pt-2 border-top fw-bold fs-5 text-dark">
+            <span>Total Payable</span>
+            <span class="text-success" id="sum-total">₹0.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer-custom">
+    <div class="container text-center text-muted small">
+      &copy; 2026 Healthy Future Web Application. Clean, Nutritious Food Delivery.
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+
+  <script>
+    async function initCheckout() {
+      if (!Auth.requireAuth()) return;
+
+      const user = Auth.getUser();
+      if (user) {
+        if (user.phone) document.getElementById('delivery-phone').value = user.phone;
+        if (user.address) document.getElementById('delivery-address').value = user.address;
+        if (user.city) document.getElementById('delivery-city').value = user.city;
+        if (user.pincode) document.getElementById('delivery-pincode').value = user.pincode;
+      }
+
+      const cart = await Cart.fetchCart();
+      const items = cart.items || [];
+
+      if (items.length === 0) {
+        alert('Your cart is empty. Add items first.');
+        window.location.href = 'restaurants.html';
+        return;
+      }
+
+      document.getElementById('checkout-items-preview').innerHTML = items.map(i => `
+        <div class="d-flex justify-content-between py-1 border-bottom border-light">
+          <span>${i.quantity}x ${i.food.food_name}</span>
+          <span class="fw-bold text-dark">₹${parseFloat(i.total_price).toFixed(2)}</span>
+        </div>
+      `).join('');
+
+      document.getElementById('sum-subtotal').textContent = `₹${parseFloat(cart.subtotal || 0).toFixed(2)}`;
+      document.getElementById('sum-delivery').textContent = `₹${parseFloat(cart.delivery_charge || 30).toFixed(2)}`;
+      document.getElementById('sum-total').textContent = `₹${parseFloat(cart.total || 0).toFixed(2)}`;
+    }
+
+    async function submitOrder(event) {
+      event.preventDefault();
+      const btn = document.getElementById('btn-submit-order');
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Placing Order...`;
+
+      const delivery_address = document.getElementById('delivery-address').value.trim();
+      const city = document.getElementById('delivery-city').value;
+      const pincode = document.getElementById('delivery-pincode').value.trim();
+      const phone = document.getElementById('delivery-phone').value.trim();
+      const payment_method = document.querySelector('input[name="payment_method"]:checked').value;
+
+      const res = await Api.post('/orders/', {
+        delivery_address,
+        city,
+        pincode,
+        phone,
+        payment_method
+      });
+
+      if (res.success && res.data) {
+        showToast('Order placed successfully!', 'success');
+        await Cart.fetchCart(); // Refresh cart counter
+        setTimeout(() => {
+          window.location.href = `orders.html?order_id=${res.data.id}&new=1`;
+        }, 1000);
+      } else {
+        showToast(res.message || 'Could not place order', 'error');
+        btn.disabled = false;
+        btn.innerHTML = `Confirm & Place Order <i class="bi bi-shield-check ms-1"></i>`;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initCheckout);
+  </script>
+</body>
+</html>
