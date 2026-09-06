@@ -3,11 +3,11 @@
  * Configurable REST API bridge with JWT authentication handling
  */
 
-// Dynamically use origin if hosted with backend, or default to 127.0.0.1:8000/api
+// Dynamically resolve API URL for local, unified Vercel deployment, or separate backend deployment
 const API_BASE_URL = window.API_BASE_URL || (
   window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://127.0.0.1:8000/api'
-    : '/api'
+    : (window.location.hostname.includes('backend') ? '/api' : 'https://backend-roan-ten-85.vercel.app/api')
 );
 
 const Api = {

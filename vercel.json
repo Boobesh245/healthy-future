@@ -1,13 +1,40 @@
 {
   "version": 2,
-  "cleanUrls": true,
   "builds": [
     {
+      "src": "backend/healthy_future/wsgi.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "15mb",
+        "runtime": "python3.11"
+      }
+    },
+    {
       "src": "frontend/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "index.html",
       "use": "@vercel/static"
     }
   ],
   "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "backend/healthy_future/wsgi.py"
+    },
+    {
+      "src": "/admin/(.*)",
+      "dest": "backend/healthy_future/wsgi.py"
+    },
+    {
+      "src": "/",
+      "dest": "/frontend/index.html"
+    },
+    {
+      "src": "/frontend/(.*)",
+      "dest": "/frontend/$1"
+    },
     {
       "src": "/(.*)",
       "dest": "/frontend/$1"
