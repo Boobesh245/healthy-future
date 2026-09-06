@@ -1,7 +1,10 @@
+# pyrefly: ignore [missing-import]
 from django.core.management.base import BaseCommand
+# pyrefly: ignore [missing-import]
 from django.contrib.auth.models import User
+# pyrefly: ignore [missing-import]
 from accounts.models import UserProfile
-
+        
 class Command(BaseCommand):
     help = 'Creates default admin user if not exists'
 
