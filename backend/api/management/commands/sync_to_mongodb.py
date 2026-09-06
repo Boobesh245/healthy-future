@@ -1,3 +1,4 @@
+# pyrefly: ignore [missing-import]
 from django.core.management.base import BaseCommand
 from accounts.models import User, UserProfile, HotelOwner
 from restaurants.models import Restaurant
