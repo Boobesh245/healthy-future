@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders - Healthy Future</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+      <a class="navbar-brand navbar-brand-custom" href="index.html">
+        <div class="brand-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+        <span>Healthy Future</span>
+      </a>
+      <div class="d-flex align-items-center gap-3 ms-auto">
+        <a href="cart.html" class="cart-badge-btn text-decoration-none">
+          <i class="bi bi-basket2-fill"></i>
+          <span>Cart</span>
+          <span class="cart-count">0</span>
+        </a>
+        <div id="nav-auth-container"></div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-5">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <div>
+        <h1 class="h2 fw-bold mb-1"><i class="bi bi-bag-check-fill text-success me-2"></i>My Orders</h1>
+        <p class="text-muted mb-0">Track delivery status and order history</p>
+      </div>
+      <a href="restaurants.html" class="btn btn-outline-custom btn-sm rounded-pill">Explore Menu</a>
+    </div>
+
+    <!-- Alert if newly placed -->
+    <div id="new-order-alert" class="alert alert-success alert-dismissible fade show d-none rounded-4 mb-4 shadow-sm" role="alert">
+      <h5 class="alert-heading fw-bold mb-1"><i class="bi bi-check-circle-fill me-2"></i>Order Placed Successfully!</h5>
+      <p class="mb-0 small">Your order has been received by the kitchen. Fresh nutrition is on its way!</p>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Orders List Container -->
+    <div id="orders-list-container">
+      <div class="text-center py-5">
+        <div class="spinner-border text-success" role="status"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer-custom">
+    <div class="container text-center text-muted small">
+      &copy; 2026 Healthy Future Web Application. Clean, Nutritious Food Delivery.
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+
+  <script>
+    async function loadOrders() {
+      if (!Auth.requireAuth()) return;
+
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('new')) {
+        document.getElementById('new-order-alert').classList.remove('d-none');
+      }
+
+      const res = await Api.get('/orders/');
+      const container = document.getElementById('orders-list-container');
+
+      const orders = res.data || (Array.isArray(res) ? res : []);
+
+      if (orders.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-4 border p-5 text-center shadow-sm">
+            <i class="bi bi-receipt fs-1 text-muted"></i>
+            <h3 class="mt-3">No orders yet</h3>
+            <p class="text-muted">You haven't placed any healthy orders yet.</p>
+            <a href="restaurants.html" class="btn btn-primary-custom mt-2">Start Ordering Clean</a>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = orders.map(o => {
+        const statusSlug = (o.status || 'Pending').toLowerCase().replace(/\s+/g, '-');
+        const canCancel = (o.status === 'Pending' || o.status === 'Confirmed');
+        const formattedDate = new Date(o.created_at).toLocaleString('en-IN', {
+          dateStyle: 'medium',
+          timeStyle: 'short'
+        });
+
+        return `
+          <div class="bg-white rounded-4 border p-4 shadow-sm mb-4">
+            <div class="d-flex flex-wrap align-items-center justify-content-between pb-3 mb-3 border-bottom gap-2">
+              <div>
+                <span class="fw-bold fs-5 me-2">Order #${o.id}</span>
+                <span class="status-badge ${statusSlug}">${o.status}</span>
+              </div>
+              <div class="small text-muted">
+                <i class="bi bi-calendar3 me-1"></i>${formattedDate}
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- Order Items -->
+              <div class="col-md-7 border-end-md">
+                <div class="fw-bold mb-2 text-dark">
+                  <i class="bi bi-shop text-success me-1"></i>${o.restaurant_name || 'Healthy Kitchen'}
+                </div>
+                <div class="d-flex flex-column gap-2 mb-3">
+                  ${(o.items || []).map(item => `
+                    <div class="d-flex justify-content-between small text-muted">
+                      <span>${item.quantity}x ${item.food_name}</span>
+                      <span class="text-dark fw-bold">₹${parseFloat(item.total_price).toFixed(2)}</span>
+                    </div>
+                  `).join('')}
+                </div>
+                <div class="small text-muted">
+                  <i class="bi bi-geo-alt me-1 text-danger"></i>Delivering to: ${o.delivery_address}, ${o.city}
+                </div>
+              </div>
+
+              <!-- Order Summary & Actions -->
+              <div class="col-md-5 mt-3 mt-md-0 d-flex flex-column justify-content-between">
+                <div class="bg-light p-3 rounded-3 mb-3">
+                  <div class="d-flex justify-content-between small text-muted mb-1">
+                    <span>Subtotal:</span>
+                    <span>₹${parseFloat(o.subtotal).toFixed(2)}</span>
+                  </div>
+                  <div class="d-flex justify-content-between small text-muted mb-2">
+                    <span>Delivery Fee:</span>
+                    <span>₹${parseFloat(o.delivery_charge).toFixed(2)}</span>
+                  </div>
+                  <div class="d-flex justify-content-between fw-bold text-dark pt-2 border-top">
+                    <span>Total Paid (${o.payment_method}):</span>
+                    <span class="text-success fs-6">₹${parseFloat(o.total).toFixed(2)}</span>
+                  </div>
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end">
+                  ${canCancel ? `
+                    <button class="btn btn-outline-danger btn-sm rounded-pill" onclick="cancelOrder(${o.id})">
+                      <i class="bi bi-x-circle me-1"></i>Cancel Order
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function cancelOrder(orderId) {
+      if (!confirm('Are you sure you want to cancel this order?')) return;
+      const res = await Api.post(`/orders/${orderId}/cancel/`);
+      if (res.success) {
+        showToast('Order cancelled successfully', 'info');
+        loadOrders();
+      } else {
+        showToast(res.message || 'Could not cancel order', 'error');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadOrders);
+  </script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Nutrition Details - Healthy Future</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+      <a class="navbar-brand navbar-brand-custom" href="index.html">
+        <div class="brand-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+        <span>Healthy Future</span>
+      </a>
+      <div class="d-flex align-items-center gap-3 ms-auto">
+        <a href="cart.html" class="cart-badge-btn text-decoration-none">
+          <i class="bi bi-basket2-fill"></i>
+          <span>Cart</span>
+          <span class="cart-count">0</span>
+        </a>
+        <div id="nav-auth-container"></div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-5">
+    <div class="mb-4">
+      <a href="javascript:history.back()" class="text-muted text-decoration-none small">
+        <i class="bi bi-arrow-left me-1"></i>Back
+      </a>
+    </div>
+
+    <div class="row g-5 align-items-start" id="food-detail-wrapper">
+      <div class="col-12 text-center py-5">
+        <div class="spinner-border text-success" role="status"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer-custom">
+    <div class="container text-center text-muted small">
+      &copy; 2026 Healthy Future Web Application. Clean, Nutritious Food Delivery.
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+
+  <script>
+    async function loadFoodDetails() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const foodId = urlParams.get('id');
+
+      if (!foodId) {
+        window.location.href = 'restaurants.html';
+        return;
+      }
+
+      const res = await Api.get(`/foods/${foodId}/`);
+      const wrapper = document.getElementById('food-detail-wrapper');
+
+      if (!res.success || !res.data) {
+        wrapper.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <h3>Food item not found</h3>
+            <a href="restaurants.html" class="btn btn-primary-custom mt-3">Browse Menu</a>
+          </div>
+        `;
+        return;
+      }
+
+      const f = res.data;
+      document.title = `${f.food_name} - Healthy Future`;
+
+      const tags = (f.health_tags || '').split(',').map(t => t.trim()).filter(Boolean);
+      const typeClass = (f.food_type || 'Veg').toLowerCase().replace('-', '');
+
+      wrapper.innerHTML = `
+        <!-- Image Column -->
+        <div class="col-lg-6">
+          <div class="position-relative rounded-4 overflow-hidden shadow-sm mb-4">
+            <img src="${f.image || 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80'}" alt="${f.food_name}" class="img-fluid w-100" style="max-height: 440px; object-fit: cover;">
+            <div class="rating-badge fs-6 px-3 py-1">
+              <i class="bi bi-star-fill text-warning"></i> ${parseFloat(f.rating).toFixed(1)}
+            </div>
+            <div class="food-type-icon" style="width: 32px; height: 32px; top: 16px; left: 16px;">
+              <span class="type-dot ${typeClass}" style="width: 14px; height: 14px;"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Details Column -->
+        <div class="col-lg-6">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge bg-success-subtle text-success fw-bold px-3 py-1 rounded-pill">${f.category_name || 'Healthy Dish'}</span>
+            <span class="badge bg-light text-dark fw-bold px-3 py-1 rounded-pill border">${f.food_type}</span>
+          </div>
+
+          <h1 class="h2 fw-bold mb-2">${f.food_name}</h1>
+          <p class="text-muted mb-3">
+            Crafted by <a href="restaurant-details.html?id=${f.restaurant}" class="fw-bold text-success">${f.restaurant_name}</a>
+          </p>
+
+          <div class="fs-2 fw-bold text-dark mb-4">₹${f.price}</div>
+
+          <p class="text-secondary mb-4">${f.description || ''}</p>
+
+          <!-- Nutrition Macro Breakdown -->
+          <div class="nutrition-breakdown-card">
+            <h5 class="fw-bold mb-3"><i class="bi bi-pie-chart-fill text-success me-2"></i>Macronutrient Breakdown</h5>
+            <div class="nutrition-grid">
+              <div class="nutrition-stat-box">
+                <div class="stat-value text-danger">${f.calories}</div>
+                <div class="stat-label">Calories (kcal)</div>
+              </div>
+              <div class="nutrition-stat-box">
+                <div class="stat-value text-success">${f.protein}g</div>
+                <div class="stat-label">Protein</div>
+              </div>
+              <div class="nutrition-stat-box">
+                <div class="stat-value text-primary">${f.carbohydrates}g</div>
+                <div class="stat-label">Carbs</div>
+              </div>
+              <div class="nutrition-stat-box">
+                <div class="stat-value text-warning">${f.fat}g</div>
+                <div class="stat-label">Healthy Fat</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Health Tags -->
+          <div class="mb-4">
+            <h6 class="fw-bold mb-2">Diet & Health Tags</h6>
+            <div class="d-flex flex-wrap gap-2">
+              ${tags.map(t => `<span class="badge bg-white text-success border border-success-subtle px-3 py-2 rounded-pill">${t}</span>`).join('')}
+            </div>
+          </div>
+
+          <!-- Ingredients -->
+          ${f.ingredients ? `
+            <div class="mb-4">
+              <h6 class="fw-bold mb-1">Key Clean Ingredients</h6>
+              <p class="text-muted small">${f.ingredients}</p>
+            </div>
+          ` : ''}
+
+          <!-- Quantity & Add to Cart -->
+          <div class="d-flex align-items-center gap-3 pt-3 border-top">
+            <div class="input-group" style="width: 130px;">
+              <button class="btn btn-outline-secondary" type="button" onclick="adjustQty(-1)">-</button>
+              <input type="number" id="detail-qty" class="form-control text-center fw-bold" value="1" min="1">
+              <button class="btn btn-outline-secondary" type="button" onclick="adjustQty(1)">+</button>
+            </div>
+            <button class="btn btn-primary-custom flex-grow-1 py-2" onclick="addCurrentFoodToCart(${f.id})">
+              <i class="bi bi-bag-plus-fill me-2"></i>Add to Cart
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function adjustQty(delta) {
+      const input = document.getElementById('detail-qty');
+      const val = parseInt(input.value) || 1;
+      if (val + delta >= 1) {
+        input.value = val + delta;
+      }
+    }
+
+    function addCurrentFoodToCart(foodId) {
+      const qty = parseInt(document.getElementById('detail-qty').value) || 1;
+      Cart.addToCart(foodId, qty);
+    }
+
+    document.addEventListener('DOMContentLoaded', loadFoodDetails);
+  </script>
+</body>
+</html>

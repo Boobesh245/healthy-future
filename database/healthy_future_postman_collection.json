@@ -1,0 +1,186 @@
+{
+  "info": {
+    "_postman_id": "healthy-future-api-collection-v1",
+    "name": "Healthy Future API Collection",
+    "description": "Complete REST API collection for Healthy Future Food Ordering & Delivery Application",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register Customer",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"boobesh\",\n    \"email\": \"user@example.com\",\n    \"password\": \"User@12345\",\n    \"password_confirm\": \"User@12345\",\n    \"first_name\": \"Boobesh\",\n    \"last_name\": \"D\",\n    \"phone\": \"9876543210\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/auth/register/", "host": ["{{baseUrl}}"], "path": ["auth", "register", ""]}
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"boobesh\",\n    \"password\": \"User@12345\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/auth/login/", "host": ["{{baseUrl}}"], "path": ["auth", "login", ""]}
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/auth/profile/", "host": ["{{baseUrl}}"], "path": ["auth", "profile", ""]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Homepage",
+      "item": [
+        {
+          "name": "Get Home Feed",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{baseUrl}}/home/", "host": ["{{baseUrl}}"], "path": ["home", ""]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Restaurants",
+      "item": [
+        {
+          "name": "Get All Restaurants",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{baseUrl}}/restaurants/", "host": ["{{baseUrl}}"], "path": ["restaurants", ""]}
+          }
+        },
+        {
+          "name": "Restaurant Details",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{baseUrl}}/restaurants/1/", "host": ["{{baseUrl}}"], "path": ["restaurants", "1", ""]}
+          }
+        },
+        {
+          "name": "Restaurant Foods",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{baseUrl}}/restaurants/1/foods/", "host": ["{{baseUrl}}"], "path": ["restaurants", "1", "foods", ""]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Foods",
+      "item": [
+        {
+          "name": "Get All Foods",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{baseUrl}}/foods/", "host": ["{{baseUrl}}"], "path": ["foods", ""]}
+          }
+        },
+        {
+          "name": "High Protein Foods",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{baseUrl}}/foods/high-protein/", "host": ["{{baseUrl}}"], "path": ["foods", "high-protein", ""]}
+          }
+        },
+        {
+          "name": "Low Calorie Foods",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{baseUrl}}/foods/low-calorie/", "host": ["{{baseUrl}}"], "path": ["foods", "low-calorie", ""]}
+          }
+        },
+        {
+          "name": "Keto Foods",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{baseUrl}}/foods/keto/", "host": ["{{baseUrl}}"], "path": ["foods", "keto", ""]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "Get Cart",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/cart/", "host": ["{{baseUrl}}"], "path": ["cart", ""]}
+          }
+        },
+        {
+          "name": "Add to Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"food_id\": 1,\n    \"quantity\": 2\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/cart/add/", "host": ["{{baseUrl}}"], "path": ["cart", "add", ""]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Place Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"delivery_address\": \"Hosur, Tamil Nadu\",\n    \"city\": \"Hosur\",\n    \"pincode\": \"635109\",\n    \"phone\": \"9876543210\",\n    \"payment_method\": \"COD\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/orders/", "host": ["{{baseUrl}}"], "path": ["orders", ""]}
+          }
+        },
+        {
+          "name": "My Orders",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/orders/", "host": ["{{baseUrl}}"], "path": ["orders", ""]}
+          }
+        }
+      ]
+    }
+  ]
+}

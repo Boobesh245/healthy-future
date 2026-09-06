@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Discover Healthy Restaurants & Dishes - Filter by calories, protein, keto, vegan, and ratings.">
+  <title>Explore Healthy Restaurants & Foods - Healthy Future</title>
+  
+  <!-- Bootstrap 5 & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+      <a class="navbar-brand navbar-brand-custom" href="index.html">
+        <div class="brand-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+        <span>Healthy Future</span>
+      </a>
+
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-1 my-2 my-lg-0">
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom active" href="restaurants.html">Restaurants</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom" href="restaurants.html?health_tag=high-protein">High Protein</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom" href="restaurants.html?health_tag=keto">Keto</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom" href="restaurants.html?food_type=Vegan">Vegan</a>
+          </li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-3 ms-lg-4 mt-3 mt-lg-0">
+          <a href="cart.html" class="cart-badge-btn text-decoration-none">
+            <i class="bi bi-basket2-fill"></i>
+            <span>Cart</span>
+            <span class="cart-count">0</span>
+          </a>
+          <div id="nav-auth-container"></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header Banner -->
+  <div class="bg-white border-bottom py-4">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <h1 class="h2 fw-bold mb-1" id="page-title">Explore Healthy Eating</h1>
+          <p class="text-muted mb-0" id="page-desc">60+ Certified clean restaurants & 720 nutrition-packed dishes</p>
+        </div>
+        <div class="col-md-6 text-md-end mt-3 mt-md-0">
+          <div class="btn-group shadow-sm" role="group">
+            <button type="button" class="btn btn-outline-success active" id="btn-view-restaurants" onclick="switchViewMode('restaurants')">
+              <i class="bi bi-shop me-1"></i> Restaurants
+            </button>
+            <button type="button" class="btn btn-outline-success" id="btn-view-foods" onclick="switchViewMode('foods')">
+              <i class="bi bi-egg-fried me-1"></i> Dishes & Foods
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Directory Container -->
+  <div class="container py-5">
+    <div class="row">
+      <!-- Filter Sidebar -->
+      <div class="col-lg-3 mb-4">
+        <div class="filter-card">
+          <div class="filter-title">
+            <span><i class="bi bi-funnel-fill text-success me-2"></i>Filters</span>
+            <button class="btn btn-link text-danger p-0 text-decoration-none small" onclick="resetFilters()">Reset All</button>
+          </div>
+
+          <!-- Search input -->
+          <div class="filter-group">
+            <label class="filter-label">Search</label>
+            <div class="input-group">
+              <input type="text" id="filter-search" class="form-control form-control-sm" placeholder="Search keywords..." onkeyup="debounceSearch()">
+              <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+            </div>
+          </div>
+
+          <!-- City Filter -->
+          <div class="filter-group">
+            <label class="filter-label">Location</label>
+            <select id="filter-city" class="form-select form-select-sm" onchange="applyFilters()">
+              <option value="">All Locations</option>
+              <option value="Hosur">Hosur</option>
+              <option value="Bangalore">Bangalore</option>
+            </select>
+          </div>
+
+          <!-- Diet / Health Tag Filter -->
+          <div class="filter-group">
+            <label class="filter-label">Diet & Health Tags</label>
+            <div class="d-flex flex-column gap-1">
+              <div class="form-check">
+                <input class="form-check-input filter-tag" type="checkbox" value="High Protein" id="tag-protein" onchange="applyFilters()">
+                <label class="form-check-label small" for="tag-protein">High Protein (25g+)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input filter-tag" type="checkbox" value="Keto" id="tag-keto" onchange="applyFilters()">
+                <label class="form-check-label small" for="tag-keto">Keto Friendly</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input filter-tag" type="checkbox" value="Vegan" id="tag-vegan" onchange="applyFilters()">
+                <label class="form-check-label small" for="tag-vegan">Vegan / Plant-Based</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input filter-tag" type="checkbox" value="Low Calorie" id="tag-lowcal" onchange="applyFilters()">
+                <label class="form-check-label small" for="tag-lowcal">Low Calorie (Under 350)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input filter-tag" type="checkbox" value="Organic" id="tag-organic" onchange="applyFilters()">
+                <label class="form-check-label small" for="tag-organic">Certified Organic</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input filter-tag" type="checkbox" value="Sugar Free" id="tag-sugarfree" onchange="applyFilters()">
+                <label class="form-check-label small" for="tag-sugarfree">Sugar Free</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Food Type (Veg / Non-Veg / Vegan) -->
+          <div class="filter-group">
+            <label class="filter-label">Food Preference</label>
+            <select id="filter-food-type" class="form-select form-select-sm" onchange="applyFilters()">
+              <option value="">All Types</option>
+              <option value="Veg">Vegetarian</option>
+              <option value="Non-Veg">Non-Vegetarian</option>
+              <option value="Vegan">Vegan</option>
+            </select>
+          </div>
+
+          <!-- Max Calories Slider -->
+          <div class="filter-group">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label class="filter-label mb-0">Max Calories</label>
+              <span class="small fw-bold text-success" id="val-calories">All</span>
+            </div>
+            <input type="range" class="form-range" id="filter-calories" min="100" max="600" step="50" value="600" oninput="updateCalorieLabel(this.value)" onchange="applyFilters()">
+          </div>
+
+          <!-- Minimum Rating -->
+          <div class="filter-group">
+            <label class="filter-label">Minimum Rating</label>
+            <select id="filter-rating" class="form-select form-select-sm" onchange="applyFilters()">
+              <option value="">Any Rating</option>
+              <option value="4.5">★ 4.5 & above</option>
+              <option value="4.0">★ 4.0 & above</option>
+            </select>
+          </div>
+
+          <!-- Sort Order -->
+          <div class="filter-group">
+            <label class="filter-label">Sort By</label>
+            <select id="filter-sort" class="form-select form-select-sm" onchange="applyFilters()">
+              <option value="-rating">Top Rated</option>
+              <option value="price">Price: Low to High</option>
+              <option value="-price">Price: High to Low</option>
+              <option value="delivery_time">Fastest Delivery</option>
+              <option value="calories">Lowest Calories</option>
+              <option value="-protein">Highest Protein</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Grid -->
+      <div class="col-lg-9">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="text-muted small">
+            Showing results: <span id="results-count" class="fw-bold text-dark">Loading...</span>
+          </div>
+        </div>
+
+        <div class="row" id="results-container">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-success" role="status"></div>
+            <div class="text-muted mt-2">Loading nutritious choices...</div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <nav class="mt-4" id="pagination-nav">
+          <ul class="pagination justify-content-center" id="pagination-list"></ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer-custom">
+    <div class="container text-center text-muted small">
+      &copy; 2026 Healthy Future Web Application. Clean, Nutritious Food Delivery.
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+
+  <script>
+    let currentMode = 'restaurants'; // 'restaurants' or 'foods'
+    let currentPage = 1;
+    let searchTimer = null;
+
+    function switchViewMode(mode) {
+      currentMode = mode;
+      document.getElementById('btn-view-restaurants').classList.toggle('active', mode === 'restaurants');
+      document.getElementById('btn-view-foods').classList.toggle('active', mode === 'foods');
+      currentPage = 1;
+      applyFilters();
+    }
+
+    function updateCalorieLabel(val) {
+      document.getElementById('val-calories').textContent = (val == 600 ? 'All' : `${val} kcal`);
+    }
+
+    function debounceSearch() {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        currentPage = 1;
+        applyFilters();
+      }, 350);
+    }
+
+    function resetFilters() {
+      document.getElementById('filter-search').value = '';
+      document.getElementById('filter-city').value = '';
+      document.getElementById('filter-food-type').value = '';
+      document.getElementById('filter-rating').value = '';
+      document.getElementById('filter-sort').value = '-rating';
+      document.getElementById('filter-calories').value = '600';
+      updateCalorieLabel(600);
+      document.querySelectorAll('.filter-tag').forEach(cb => cb.checked = false);
+      currentPage = 1;
+      applyFilters();
+    }
+
+    async function applyFilters() {
+      const container = document.getElementById('results-container');
+      container.innerHTML = `
+        <div class="col-12 text-center py-5">
+          <div class="spinner-border text-success" role="status"></div>
+        </div>
+      `;
+
+      const search = document.getElementById('filter-search').value.trim();
+      const city = document.getElementById('filter-city').value;
+      const foodType = document.getElementById('filter-food-type').value;
+      const rating = document.getElementById('filter-rating').value;
+      const sort = document.getElementById('filter-sort').value;
+      const maxCal = document.getElementById('filter-calories').value;
+
+      // Collect checked tags
+      const checkedTags = Array.from(document.querySelectorAll('.filter-tag:checked')).map(cb => cb.value);
+
+      // If user selected health tags, calories, or food type, auto switch to 'foods' mode for best match
+      if ((checkedTags.length > 0 || maxCal < 600 || foodType) && currentMode === 'restaurants') {
+        currentMode = 'foods';
+        document.getElementById('btn-view-restaurants').classList.remove('active');
+        document.getElementById('btn-view-foods').classList.add('active');
+      }
+
+      if (currentMode === 'restaurants') {
+        const params = {
+          page: currentPage,
+          search: search,
+          city: city,
+          rating: rating,
+          ordering: sort.includes('protein') || sort.includes('calories') ? '-rating' : sort
+        };
+
+        const res = await Api.get('/restaurants/', params);
+        renderRestaurantResults(res);
+      } else {
+        const params = {
+          page: currentPage,
+          search: search,
+          food_type: foodType,
+          rating: rating,
+          ordering: sort
+        };
+        if (checkedTags.length > 0) params.health_tag = checkedTags.join(',');
+        if (maxCal < 600) params.max_calories = maxCal;
+
+        const res = await Api.get('/foods/', params);
+        renderFoodResults(res);
+      }
+    }
+
+    function renderRestaurantResults(res) {
+      const container = document.getElementById('results-container');
+      const countEl = document.getElementById('results-count');
+
+      let list = [];
+      let totalCount = 0;
+      if (res.results) {
+        list = res.results;
+        totalCount = res.count || list.length;
+      } else if (Array.isArray(res)) {
+        list = res;
+        totalCount = list.length;
+      }
+
+      countEl.textContent = `${totalCount} restaurants`;
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <i class="bi bi-search fs-1 text-muted"></i>
+            <h4 class="mt-3">No healthy restaurants found</h4>
+            <p class="text-muted">Try relaxing your search terms or filters.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(r => renderRestaurantCard(r)).join('');
+      renderPagination(totalCount, res.next, res.previous);
+    }
+
+    function renderFoodResults(res) {
+      const container = document.getElementById('results-container');
+      const countEl = document.getElementById('results-count');
+
+      let list = [];
+      let totalCount = 0;
+      if (res.results) {
+        list = res.results;
+        totalCount = res.count || list.length;
+      } else if (Array.isArray(res)) {
+        list = res;
+        totalCount = list.length;
+      }
+
+      countEl.textContent = `${totalCount} dishes`;
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <i class="bi bi-egg-fried fs-1 text-muted"></i>
+            <h4 class="mt-3">No matching healthy dishes</h4>
+            <p class="text-muted">Try choosing different macro criteria or health tags.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(f => renderFoodCard(f)).join('');
+      renderPagination(totalCount, res.next, res.previous);
+    }
+
+    function renderPagination(count, next, prev) {
+      const list = document.getElementById('pagination-list');
+      if (!count || count <= 12) {
+        list.innerHTML = '';
+        return;
+      }
+
+      const totalPages = Math.ceil(count / 12);
+      let html = `
+        <li class="page-item ${!prev ? 'disabled' : ''}">
+          <a class="page-link" href="javascript:void(0)" onclick="goToPage(${currentPage - 1})">Previous</a>
+        </li>
+      `;
+
+      for (let p = 1; p <= Math.min(totalPages, 7); p++) {
+        html += `
+          <li class="page-item ${p === currentPage ? 'active' : ''}">
+            <a class="page-link" href="javascript:void(0)" onclick="goToPage(${p})">${p}</a>
+          </li>
+        `;
+      }
+
+      html += `
+        <li class="page-item ${!next ? 'disabled' : ''}">
+          <a class="page-link" href="javascript:void(0)" onclick="goToPage(${currentPage + 1})">Next</a>
+        </li>
+      `;
+
+      list.innerHTML = html;
+    }
+
+    function goToPage(page) {
+      currentPage = page;
+      applyFilters();
+      window.scrollTo({ top: 120, behavior: 'smooth' });
+    }
+
+    // Read query params from URL on load
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('search')) {
+        document.getElementById('filter-search').value = urlParams.get('search');
+      }
+      if (urlParams.get('health_tag')) {
+        const tag = urlParams.get('health_tag').toLowerCase();
+        if (tag.includes('protein')) document.getElementById('tag-protein').checked = true;
+        if (tag.includes('keto')) document.getElementById('tag-keto').checked = true;
+        currentMode = 'foods';
+        document.getElementById('btn-view-restaurants').classList.remove('active');
+        document.getElementById('btn-view-foods').classList.add('active');
+      }
+      if (urlParams.get('food_type')) {
+        document.getElementById('filter-food-type').value = urlParams.get('food_type');
+        currentMode = 'foods';
+        document.getElementById('btn-view-restaurants').classList.remove('active');
+        document.getElementById('btn-view-foods').classList.add('active');
+      }
+      if (urlParams.get('max_calories')) {
+        const cal = urlParams.get('max_calories');
+        document.getElementById('filter-calories').value = cal;
+        updateCalorieLabel(cal);
+        currentMode = 'foods';
+      }
+
+      applyFilters();
+    });
+  </script>
+</body>
+</html>

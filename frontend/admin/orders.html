@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage All Orders - Admin Portal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3 col-lg-2 portal-sidebar d-flex flex-column">
+        <a href="index.html" class="portal-brand text-decoration-none">
+          <i class="bi bi-shield-check"></i>
+          <span>Admin Portal</span>
+        </a>
+        <div class="d-flex flex-column gap-1 mb-auto">
+          <a href="index.html" class="portal-nav-link"><i class="bi bi-speedometer2"></i>Dashboard</a>
+          <a href="users.html" class="portal-nav-link"><i class="bi bi-people"></i>Customers</a>
+          <a href="owners.html" class="portal-nav-link"><i class="bi bi-person-badge"></i>Hotel Owners</a>
+          <a href="restaurants.html" class="portal-nav-link"><i class="bi bi-shop"></i>Restaurants</a>
+          <a href="categories.html" class="portal-nav-link"><i class="bi bi-tags"></i>Categories</a>
+          <a href="foods.html" class="portal-nav-link"><i class="bi bi-egg-fried"></i>All Foods</a>
+          <a href="orders.html" class="portal-nav-link active"><i class="bi bi-receipt"></i>All Orders</a>
+        </div>
+        <div class="pt-4 border-top border-secondary">
+          <a href="../index.html" class="portal-nav-link text-muted"><i class="bi bi-arrow-left"></i>View Website</a>
+          <a href="javascript:void(0)" onclick="Auth.logout()" class="portal-nav-link text-danger"><i class="bi bi-box-arrow-right"></i>Sign Out</a>
+        </div>
+      </div>
+
+      <div class="col-md-9 col-lg-10 p-4 p-md-5">
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
+          <div>
+            <h1 class="h3 fw-bold mb-1">Global Customer Orders</h1>
+            <p class="text-muted mb-0">Monitor orders, customer destinations, payment modes, and fulfillment statuses</p>
+          </div>
+          <button class="btn btn-outline-custom rounded-pill btn-sm" onclick="loadAdminOrders()">
+            <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+          </button>
+        </div>
+
+        <div class="bg-white rounded-4 border shadow-sm overflow-hidden">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Order #</th>
+                  <th>Customer</th>
+                  <th>Restaurant</th>
+                  <th>Items</th>
+                  <th>Total</th>
+                  <th>Date & Time</th>
+                  <th>Status</th>
+                  <th class="text-end">Update</th>
+                </tr>
+              </thead>
+              <tbody id="admin-orders-tbody">
+                <tr><td colspan="8" class="text-center py-5"><div class="spinner-border text-success"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    async function loadAdminOrders() {
+      if (!Auth.requireAuth(['admin'])) return;
+      const res = await Api.get('/admin/orders/');
+      const tbody = document.getElementById('admin-orders-tbody');
+
+      if (!res.success || !res.data) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-danger">${res.message || 'Error'}</td></tr>`;
+        return;
+      }
+
+      const list = res.data;
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5 text-muted">No orders in the system yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(o => {
+        const statusSlug = (o.status || 'Pending').toLowerCase().replace(/\s+/g, '-');
+        const formattedDate = new Date(o.created_at).toLocaleString('en-IN', {
+          dateStyle: 'short',
+          timeStyle: 'short'
+        });
+
+        const itemsSummary = (o.items || []).map(i => `${i.quantity}x ${i.food_name}`).join(', ');
+
+        return `
+          <tr>
+            <td class="fw-bold">#${o.id}</td>
+            <td>
+              <div class="fw-bold">${o.customer_name || o.customer_username}</div>
+              <div class="small text-muted">${o.city}</div>
+            </td>
+            <td>${o.restaurant_name || 'Healthy Kitchen'}</td>
+            <td class="small text-muted" style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${itemsSummary}">
+              ${itemsSummary || '1x Healthy Meal'}
+            </td>
+            <td class="fw-bold text-success">₹${parseFloat(o.total).toFixed(2)}</td>
+            <td class="small text-muted">${formattedDate}</td>
+            <td><span class="status-badge ${statusSlug}">${o.status}</span></td>
+            <td class="text-end">
+              <select class="form-select form-select-sm d-inline-block" style="width: 140px;" onchange="updateOrderStatus(${o.id}, this.value)">
+                <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                <option value="Confirmed" ${o.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
+                <option value="Preparing" ${o.status === 'Preparing' ? 'selected' : ''}>Preparing</option>
+                <option value="Out for Delivery" ${o.status === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery</option>
+                <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+              </select>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function updateOrderStatus(orderId, newStatus) {
+      const res = await Api.patch(`/admin/orders/${orderId}/status/`, { status: newStatus });
+      if (res.success) {
+        showToast(`Order #${orderId} set to ${newStatus}`, 'success');
+        loadAdminOrders();
+      } else {
+        showToast(res.message || 'Status update failed', 'error');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadAdminOrders);
+  </script>
+</body>
+</html>
